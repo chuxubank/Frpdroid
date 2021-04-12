@@ -75,6 +75,7 @@ fun ServerAddress() {
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth(),
+        singleLine = true,
         onValueChange = { text = it },
         label = { Text("Server Address") },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri)
