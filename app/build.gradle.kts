@@ -42,14 +42,18 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion = rootProject.extra["compose_version"] as String
-        kotlinCompilerVersion = "1.4.32"
     }
 }
 
 dependencies {
+    // File
+//    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
 
     implementation("androidx.core:core-ktx:1.3.2")
     implementation("androidx.appcompat:appcompat:1.2.0")
+
+    // Frp
+    implementation("top.chuxubank.frp:frpclib:0.36.2")
 
     // UI
     implementation("androidx.compose.ui:ui:${rootProject.extra["compose_version"]}")
@@ -68,7 +72,7 @@ dependencies {
 
     // Test
     implementation("androidx.activity:activity-compose:1.3.0-alpha06")
-    testImplementation("junit:junit:4.+")
+    testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:${rootProject.extra["compose_version"]}")
