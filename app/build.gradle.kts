@@ -46,14 +46,11 @@ android {
 }
 
 dependencies {
-    // File
-//    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
-
     implementation("androidx.core:core-ktx:1.3.2")
     implementation("androidx.appcompat:appcompat:1.2.0")
 
     // Frp
-    implementation("top.chuxubank.frp:frpclib:0.36.2")
+    implementation("top.chuxubank.frp:frpclib:0.36.2@aar")
 
     // UI
     implementation("androidx.compose.ui:ui:${rootProject.extra["compose_version"]}")

@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -11,8 +12,11 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -44,7 +48,9 @@ fun HomeScreen(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     mainViewModel: MainViewModel = viewModel()
 ) {
-    val connectionState by mainViewModel.connectionState.observeAsState()
+    val connectionState by mainViewModel.connectionState.observeAsState(Disconnected)
+    val addr by mainViewModel.addr.observeAsState("")
+    val port by mainViewModel.port.observeAsState("")
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
@@ -53,11 +59,17 @@ fun HomeScreen(
                 title = { Text(title) },
             )
         },
-        content = { ServerAddress() },
+        content = {
+            ServerAddress(
+                addr,
+                port,
+                { mainViewModel.onAddressChange(it) },
+                { mainViewModel.onPortChange(it) })
+        },
         floatingActionButton = {
             FAB(
                 scaffoldState,
-                connectionState ?: Disconnected,
+                connectionState,
                 onToggleConnection = {
                     mainViewModel.onToggleConnection()
                 }
@@ -67,19 +79,38 @@ fun HomeScreen(
 }
 
 @Composable
-fun ServerAddress() {
-    var text by remember { mutableStateOf("") }
-
-    OutlinedTextField(
-        value = text,
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth(),
-        singleLine = true,
-        onValueChange = { text = it },
-        label = { Text("Server Address") },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri)
-    )
+fun ServerAddress(
+    addr: String,
+    port: String,
+    onAddressChange: (String) -> Unit,
+    onPortChange: (String) -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        OutlinedTextField(
+            value = addr,
+            modifier = Modifier
+                .padding(8.dp)
+                .weight(2f),
+            singleLine = true,
+            onValueChange = { onAddressChange(it) },
+            label = { Text(stringResource(R.string.label_server_address)) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri)
+        )
+        Text(":")
+        OutlinedTextField(
+            value = port,
+            modifier = Modifier
+                .padding(8.dp)
+                .weight(1f),
+            singleLine = true,
+            onValueChange = { onPortChange(it) },
+            label = { Text(stringResource(R.string.label_port)) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
+    }
 }
 
 @Composable
