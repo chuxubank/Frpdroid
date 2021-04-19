@@ -1,16 +1,39 @@
 package top.chuxubank.frpdroid
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import frpclib.Frpclib
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import top.chuxubank.frpdroid.ConnectionState.*
+import java.io.File
 
-class MainViewModel : ViewModel() {
+class MainViewModel(application: Application) : AndroidViewModel(application) {
+
+    companion object {
+        val TAG: String = MainViewModel::class.java.simpleName
+    }
+
+    val app = getApplication<Application>()
+    val configDir = app.getExternalFilesDir("config")
+    val configFile = File(configDir, "frpc.ini")
     val connectionState = MutableLiveData(Disconnected)
-    val addr = MutableLiveData("")
-    val port = MutableLiveData("")
+    val addr = MutableLiveData("192.168.2.129")
+    val port = MutableLiveData("7000")
+    val config =
+        """
+            [common]
+            server_addr = ${addr.value}
+            server_port = ${port.value}
+            
+            [ssh]
+            type = tcp
+            local_ip = 127.0.0.1
+            local_port = 5555
+            remote_port = 1234
+        """.trimIndent()
 
     fun onToggleConnection() {
         connectionState.value = when (connectionState.value) {
@@ -19,20 +42,13 @@ class MainViewModel : ViewModel() {
             Disconnected -> Connecting
             null -> Disconnected
         }
-        viewModelScope.launch {
-            Frpclib.run(
-                """
-                    [common]
-                    server_addr = ${addr.value}
-                    server_port = ${port.value}
-                    
-                    [ssh]
-                    type = tcp
-                    local_ip = 127.0.0.1
-                    local_port = 5555
-                    remote_port = 1234
-                    """.trimIndent()
-            )
+        configFile.writeText(config)
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                Frpclib.run(configFile.toString())
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

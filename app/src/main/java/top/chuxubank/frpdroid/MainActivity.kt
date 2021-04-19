@@ -97,7 +97,7 @@ fun ServerAddress(
             singleLine = true,
             onValueChange = { onAddressChange(it) },
             label = { Text(stringResource(R.string.label_server_address)) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
         Text(":")
         OutlinedTextField(
