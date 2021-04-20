@@ -52,6 +52,9 @@ dependencies {
     // Frp
     implementation("top.chuxubank.frp:frpclib:0.36.2@aar")
 
+    // Worker
+    implementation("androidx.work:work-runtime-ktx:2.7.0-alpha02")
+
     // UI
     implementation("androidx.compose.ui:ui:${rootProject.extra["compose_version"]}")
     implementation("androidx.compose.ui:ui-tooling:${rootProject.extra["compose_version"]}")

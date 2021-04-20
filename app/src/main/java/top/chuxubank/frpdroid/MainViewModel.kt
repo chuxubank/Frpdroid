@@ -3,22 +3,23 @@ package top.chuxubank.frpdroid
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import frpclib.Frpclib
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import top.chuxubank.frpdroid.ConnectionState.*
+import top.chuxubank.frpdroid.FrpWorker.Companion.configDirName
+import top.chuxubank.frpdroid.FrpWorker.Companion.configFileName
 import java.io.File
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     companion object {
         val TAG: String = MainViewModel::class.java.simpleName
+        val FRPC_WORK = "FrpcWork"
     }
 
     val app = getApplication<Application>()
-    val configDir = app.getExternalFilesDir("config")
-    val configFile = File(configDir, "frpc.ini")
+    val configFile = File(app.getExternalFilesDir(configDirName), configFileName)
     val connectionState = MutableLiveData(Disconnected)
     val addr = MutableLiveData("192.168.2.129")
     val port = MutableLiveData("7000")
@@ -36,18 +37,17 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         """.trimIndent()
 
     fun onToggleConnection() {
-        connectionState.value = when (connectionState.value) {
-            Connected -> Disconnected
-            Connecting -> Disconnected
-            Disconnected -> Connecting
-            null -> Disconnected
-        }
-        configFile.writeText(config)
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                Frpclib.run(configFile.toString())
-            } catch (e: Exception) {
-                e.printStackTrace()
+        when (connectionState.value) {
+            Connected, Connecting, null -> {
+                connectionState.value = Disconnected
+                WorkManager.getInstance(app).cancelUniqueWork(FRPC_WORK)
+            }
+            Disconnected -> {
+                connectionState.value = Connecting
+                configFile.writeText(config)
+                val frpcWork = OneTimeWorkRequestBuilder<FrpWorker>().build()
+                WorkManager.getInstance(app)
+                    .beginUniqueWork(FRPC_WORK, ExistingWorkPolicy.KEEP, frpcWork).enqueue()
             }
         }
     }
