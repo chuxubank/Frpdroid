@@ -12,8 +12,8 @@ class FrpWorker(
 ) : Worker(appContext, workerParams) {
 
     companion object {
-        val configDirName = "config"
-        val configFileName = "frpc.ini"
+        const val configDirName = "config"
+        const val configFileName = "frpc.ini"
     }
 
     override fun doWork(): Result {

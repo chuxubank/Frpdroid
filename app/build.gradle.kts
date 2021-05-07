@@ -53,7 +53,7 @@ dependencies {
     implementation("top.chuxubank.frp:frpclib:0.36.2@aar")
 
     // Worker
-    implementation("androidx.work:work-runtime-ktx:2.7.0-alpha02")
+    implementation("androidx.work:work-runtime-ktx:2.7.0-alpha03")
 
     // UI
     implementation("androidx.compose.ui:ui:${rootProject.extra["compose_version"]}")
@@ -67,11 +67,9 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:${rootProject.extra["compose_version"]}")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha04")
-    /// FIXME: Should be remove when androidx.compose.runtime:runtime bumps
-    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable-jvm:0.3.4")
 
     // Test
-    implementation("androidx.activity:activity-compose:1.3.0-alpha06")
+    implementation("androidx.activity:activity-compose:1.3.0-alpha07")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")

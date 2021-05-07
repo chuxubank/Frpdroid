@@ -21,7 +21,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val app = getApplication<Application>()
     val configFile = File(app.getExternalFilesDir(configDirName), configFileName)
     val connectionState = MutableLiveData(Disconnected)
-    val addr = MutableLiveData("192.168.2.129")
+    val addr = MutableLiveData("192.168.2.105")
     val port = MutableLiveData("7000")
     val config =
         """
