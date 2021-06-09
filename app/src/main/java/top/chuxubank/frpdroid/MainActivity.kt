@@ -64,7 +64,8 @@ fun HomeScreen(
                 addr,
                 port,
                 { mainViewModel.onAddressChange(it) },
-                { mainViewModel.onPortChange(it) })
+                { mainViewModel.onPortChange(it) }
+            )
         },
         floatingActionButton = {
             FAB(
