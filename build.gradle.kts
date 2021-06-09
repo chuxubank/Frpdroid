@@ -1,4 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+@Suppress("UNUSED_VARIABLE", "LocalVariableName")
 buildscript {
     val compose_version by extra("1.0.0-beta08")
     repositories {
